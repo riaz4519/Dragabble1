@@ -87,18 +87,20 @@ class TestimonialController extends Controller
     {
         //
        
-        Testimonial::truncate();
-        foreach ($request->testimonials as $testimonial) {
-            Testimonial::create([
-                'id' => $testimonial['id'],
-                'name' => $testimonial['name'],
-                'qoute' => $testimonial['qoute'],
-                'visible' => true,
-                'order' => $testimonial['order']
-            ]);
-            
+       
+      $testimonials = Testimonial::all();
+
+        foreach ($testimonials as $testimonial) {
+            $testimonial->timestamps = false;
+            $id = $testimonial->id;
+            foreach ($request->testimonials as $testimonialFrontEnd) {
+                if ($testimonialFrontEnd['id'] == $id) {
+                    $testimonial->update(['order' => $testimonialFrontEnd['order']]);
+                }
+            }
         }
-        return response('update successfull',200);
+        
+        return response("update success",200);
     }
 
     /**
